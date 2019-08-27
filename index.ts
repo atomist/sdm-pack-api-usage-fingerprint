@@ -14,27 +14,17 @@
  * limitations under the License.
  */
 
-import {
-    ConfigurationValueType,
-    ExtensionPack,
-    metadata,
-} from "@atomist/sdm";
-import { aspectSupport } from "@atomist/sdm-pack-aspect";
-
-export const deprecatedApiFingerprintSupport: ExtensionPack = {
-    ...metadata(),
-    requiredConfigurationValues: [
-        {
-            path: "sdm.aspect.deprecation.scanner.location",
-            type: ConfigurationValueType.String,
-        },
-    ],
-    configure: sdm => {
-        sdm.addExtensionPacks(
-            aspectSupport({
-                aspects: [],
-            }),
-        );
-        return sdm;
-    },
-};
+export { deprecatedApiFingerprintSupport } from "./lib/support";
+export { UsedApiExtractor } from "./lib/aspect/UsedApiExtractor";
+export {
+    UsedApis,
+    ApiDeprecation,
+    Annotation,
+    ClassOrInterface,
+    Method,
+} from "./lib/aspect/model";
+export {
+    createDeprecatedApiUsageAspect,
+    DeprecatedApiFPData,
+} from "./lib/aspect/deprecatedApiUsageAspect";
+export { createDeprecatedApiFingerprint } from "./lib/aspect/fingerprint";

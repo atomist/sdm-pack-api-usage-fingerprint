@@ -22,9 +22,14 @@ import {
 import { UsedApis } from "./model";
 import { UsedApiExtractor } from "./UsedApiExtractor";
 
+export interface DeprecatedApiFPData {
+    api: string;
+    version: string;
+}
+
 export function createDeprecatedApiUsageAspect(
     api: string,
-    fingerprinter: (usedApis: UsedApis) => Array<FP<string>>): Aspect<string> {
+    fingerprinter: (usedApis: UsedApis) => Array<FP<DeprecatedApiFPData>>): Aspect<DeprecatedApiFPData> {
     return {
         name: `deprecated-${api.toLowerCase()}-api-usage`,
         displayName: `Used deprecated API versions for ${api}`,
@@ -33,10 +38,7 @@ export function createDeprecatedApiUsageAspect(
             const usedApis = await usedApiExtractor.getUsedApis(p as LocalProject, pli);
             return fingerprinter(usedApis);
         },
-        apply: async (p, papi) => {
-            return p;
-        },
         toDisplayableFingerprintName: name => name,
-        toDisplayableFingerprint: fp => fp.data,
+        toDisplayableFingerprint: fp => `deprecated api ${fp.data.api}: ${fp.data.version}`,
     };
 }
