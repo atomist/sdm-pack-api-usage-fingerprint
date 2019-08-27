@@ -47,5 +47,3 @@ export class ApiDeprecation implements ApiDeprecation {
         return toArray(elements).some(e => e === this.elementFQN);
     }
 }
-
-

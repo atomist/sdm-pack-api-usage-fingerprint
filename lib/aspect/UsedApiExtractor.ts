@@ -10,7 +10,7 @@ import {
 import { UsedApis } from "./model";
 
 export class UsedApiExtractor {
-    private scanToolPath: string;
+    private readonly scanToolPath: string;
 
     constructor() {
         this.scanToolPath = configurationValue<string>("sdm.aspect.deprecation.scanner.location");

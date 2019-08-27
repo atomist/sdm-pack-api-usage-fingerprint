@@ -1,7 +1,7 @@
 import { LocalProject } from "@atomist/automation-client";
 import {
     Aspect,
-    FP
+    FP,
 } from "@atomist/sdm-pack-fingerprints";
 import { UsedApis } from "./model";
 import { UsedApiExtractor } from "./UsedApiExtractor";
@@ -22,5 +22,5 @@ export function createDeprecatedApiUsageAspect(
         },
         toDisplayableFingerprintName: name => name,
         toDisplayableFingerprint: fp => fp.data,
-    }
-};
+    };
+}
