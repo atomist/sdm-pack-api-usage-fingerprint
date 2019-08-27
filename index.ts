@@ -20,7 +20,6 @@ import {
     metadata,
 } from "@atomist/sdm";
 import { aspectSupport } from "@atomist/sdm-pack-aspect";
-import { GuavaDeprecatedApiUsage } from "./lib/aspect/guava/guavaDeprecatedApiUsage";
 
 export const guavaDeprecatedApiSupport: ExtensionPack = {
     ...metadata(),
@@ -33,9 +32,7 @@ export const guavaDeprecatedApiSupport: ExtensionPack = {
     configure: sdm => {
         sdm.addExtensionPacks(
             aspectSupport({
-                aspects: [
-                    GuavaDeprecatedApiUsage,
-                ],
+                aspects: [],
             }),
         );
         return sdm;
