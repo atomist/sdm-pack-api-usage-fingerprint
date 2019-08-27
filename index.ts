@@ -21,7 +21,7 @@ import {
 } from "@atomist/sdm";
 import { aspectSupport } from "@atomist/sdm-pack-aspect";
 
-export const guavaDeprecatedApiSupport: ExtensionPack = {
+export const deprecatedApiFingerprintSupport: ExtensionPack = {
     ...metadata(),
     requiredConfigurationValues: [
         {
