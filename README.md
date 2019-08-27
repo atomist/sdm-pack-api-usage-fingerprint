@@ -2,6 +2,6 @@
   <img src="https://images.atomist.com/sdm/SDM-Logo-Dark.png">
 </p>
 
-# @atomist/sdm-pack-guava-deprecation
+# @atomist/sdm-pack-deprecation-fingerprint
 
-Extension pack for aspect support for Guava deprecations
+Extension pack for aspect support for fingerprinting usage of deprecated APIs
