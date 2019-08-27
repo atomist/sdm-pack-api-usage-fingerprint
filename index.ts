@@ -20,7 +20,7 @@ import {
     metadata,
 } from "@atomist/sdm";
 import { aspectSupport } from "@atomist/sdm-pack-aspect";
-import { GuavaDeprecatedApiUsage } from "./lib/aspect/guava/GuavaDeprecatedApiUsage";
+import { GuavaDeprecatedApiUsage } from "./lib/aspect/guava/guavaDeprecatedApiUsage";
 
 export const guavaDeprecatedApiSupport: ExtensionPack = {
     ...metadata(),
