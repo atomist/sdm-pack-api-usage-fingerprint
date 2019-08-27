@@ -17,7 +17,7 @@
 import {
     ConfigurationValueType,
     ExtensionPack,
-    metadata
+    metadata,
 } from "@atomist/sdm";
 import { aspectSupport } from "@atomist/sdm-pack-aspect";
 
