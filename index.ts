@@ -14,4 +14,30 @@
  * limitations under the License.
  */
 
-export { SeedSupport } from "./lib/seed";
+import {
+    ConfigurationValueType,
+    ExtensionPack,
+    metadata,
+} from "@atomist/sdm";
+import { aspectSupport } from "@atomist/sdm-pack-aspect";
+import { GuavaDeprecatedApiUsage } from "./lib/aspect/guava/GuavaDeprecatedApiUsage";
+
+export const guavaDeprecatedApiSupport: ExtensionPack = {
+    ...metadata(),
+    requiredConfigurationValues: [
+        {
+            path: "sdm.aspect.deprecation.scanner.location",
+            type: ConfigurationValueType.String,
+        },
+    ],
+    configure: sdm => {
+        sdm.addExtensionPacks(
+            aspectSupport({
+                aspects: [
+                    GuavaDeprecatedApiUsage,
+                ],
+            }),
+        );
+        return sdm;
+    },
+};

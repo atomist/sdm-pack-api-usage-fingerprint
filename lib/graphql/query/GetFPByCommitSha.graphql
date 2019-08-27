@@ -1,0 +1,10 @@
+query GetFPByCommitSha($sha: String!, $name: String!) {
+    Commit(sha: $sha) {
+        analysis(name: $name) {
+            type
+            name
+            sha
+            data
+        }
+    }
+}

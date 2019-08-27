@@ -1,19 +1,15 @@
 {
-  "name": "@lievendoclo/sdm-pack-guava-deprecation",
+  "name": "@atomist/sdm-pack-deprecation-fingerprint",
   "version": "0.1.0",
-  "description": "my new project",
-  "author": {
-    "name": "lievendoclo",
-    "email": "lieven@atomist.com"
-  },
+  "description": "Extension pack for deprecation fingerprinting",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/lievendoclo/sdm-pack-guava-deprecation#readme",
+  "homepage": "https://github.com/atomist/sdm-pack-guava-deprecation#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lievendoclo/sdm-pack-guava-deprecation.git"
+    "url": "https://github.com/atomist/sdm-pack-guava-deprecation.git"
   },
   "bugs": {
-    "url": "https://github.com/lievendoclo/sdm-pack-guava-deprecation/issues"
+    "url": "https://github.com/atomist/sdm-pack-guava-deprecation/issues"
   },
   "keywords": [
     "atomist",
@@ -25,14 +21,19 @@
   "types": "./index.d.ts",
   "dependencies": {},
   "peerDependencies": {
-    "@atomist/automation-client": "*",
-    "@atomist/sdm": "*",
-    "@atomist/sdm-core": "*"
+    "@atomist/automation-client": "^1.6.3",
+    "@atomist/sdm": "^1.6.2",
+    "@atomist/sdm-core": "^1.6.2",
+    "@atomist/sdm-pack-fingerprints": "^5.0.0",
+    "@atomist/sdm-pack-aspect": "^1.0.0"
   },
   "devDependencies": {
-    "@atomist/automation-client": "^1.6.1",
-    "@atomist/sdm": "^1.6.0",
-    "@atomist/sdm-core": "^1.6.0",
+    "@atomist/automation-client": "1.6.3-master.20190821065818",
+    "@atomist/sdm": "1.6.2-master.20190821222758",
+    "@atomist/sdm-core": "1.6.2-master.20190822002319",
+    "@atomist/sdm-pack-aspect": "^1.0.0-master.20190826205249",
+    "@atomist/sdm-pack-fingerprints": "^5.0.0-master.20190827103907",
+    "@atomist/sdm-pack-sloc": "1.0.3-master.20190502175705",
     "@types/mocha": "^5.2.7",
     "@types/power-assert": "^1.5.0",
     "espower-typescript": "^9.0.2",
