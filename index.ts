@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export { deprecatedApiFingerprintSupport } from "./lib/support";
+export { apiUsageFingerprintSupport } from "./lib/support";
 export { UsedApiExtractor } from "./lib/aspect/UsedApiExtractor";
 export {
     UsedApis,
