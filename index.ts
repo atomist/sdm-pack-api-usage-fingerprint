@@ -26,6 +26,6 @@ export {
 } from "./lib/aspect/model";
 export {
     createDeprecatedApiUsageAspect,
-    DeprecatedApiFPData,
+    UsedApiFPData,
 } from "./lib/aspect/deprecatedApiUsageAspect";
 export { createDeprecatedApiFingerprint } from "./lib/aspect/fingerprint";

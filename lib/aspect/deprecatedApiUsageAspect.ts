@@ -15,6 +15,7 @@
  */
 
 import { LocalProject } from "@atomist/automation-client";
+import { CodeTransform } from "@atomist/sdm";
 import {
     Aspect,
     FP,
@@ -22,14 +23,15 @@ import {
 import { UsedApis } from "./model";
 import { UsedApiExtractor } from "./UsedApiExtractor";
 
-export interface DeprecatedApiFPData {
+export interface UsedApiFPData {
     api: string;
     version: string;
 }
 
 export function createDeprecatedApiUsageAspect(
     api: string,
-    fingerprinter: (usedApis: UsedApis) => Array<FP<DeprecatedApiFPData>>): Aspect<DeprecatedApiFPData> {
+    fingerprinter: (usedApis: UsedApis) => Array<FP<UsedApiFPData>>,
+    targetTransform: CodeTransform<{ fp: FP<UsedApiFPData> }>): Aspect<UsedApiFPData> {
     return {
         name: `deprecated-${api.toLowerCase()}-api-usage`,
         displayName: `Used deprecated API versions for ${api}`,
@@ -38,6 +40,7 @@ export function createDeprecatedApiUsageAspect(
             const usedApis = await usedApiExtractor.getUsedApis(p as LocalProject, pli);
             return fingerprinter(usedApis);
         },
+        apply: targetTransform,
         toDisplayableFingerprintName: name => name,
         toDisplayableFingerprint: fp => `deprecated api ${fp.data.api}: ${fp.data.version}`,
     };
