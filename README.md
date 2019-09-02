@@ -2,6 +2,6 @@
   <img src="https://images.atomist.com/sdm/SDM-Logo-Dark.png">
 </p>
 
-# @atomist/sdm-pack-deprecation-fingerprint
+# @atomist/sdm-pack-api-usage-fingerprinting
 
-Extension pack for aspect support for fingerprinting usage of deprecated APIs
+Extension pack for aspect support for fingerprinting usage of APIs
