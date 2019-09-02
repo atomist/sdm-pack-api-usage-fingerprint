@@ -22,6 +22,7 @@ export {
     Annotation,
     ClassOrInterface,
     Method,
+    usesDeprecatedApis,
 } from "./lib/aspect/model";
 export {
     createDeprecatedApiUsageAspect,
