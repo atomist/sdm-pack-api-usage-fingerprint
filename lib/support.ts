@@ -19,22 +19,16 @@ import {
     ExtensionPack,
     metadata,
 } from "@atomist/sdm";
-import { aspectSupport } from "@atomist/sdm-pack-aspect";
 
-export const deprecatedApiFingerprintSupport: ExtensionPack = {
+export const apiUsageFingerprintSupport: ExtensionPack = {
     ...metadata(),
     requiredConfigurationValues: [
         {
-            path: "sdm.aspect.deprecation.scanner.location",
+            path: "sdm.aspect.apiusage.scanner.location",
             type: ConfigurationValueType.String,
         },
     ],
     configure: sdm => {
-        sdm.addExtensionPacks(
-            aspectSupport({
-                aspects: [],
-            }),
-        );
         return sdm;
     },
 };

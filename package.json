@@ -1,15 +1,15 @@
 {
-  "name": "@atomist/sdm-pack-deprecation-fingerprint",
+  "name": "@atomist/sdm-pack-api-usage-fingerprinting",
   "version": "0.1.0",
-  "description": "Extension pack for deprecation fingerprinting",
+  "description": "Extension pack for API usage fingerprinting",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/atomist/sdm-pack-guava-deprecation#readme",
+  "homepage": "https://github.com/atomist/sdm-pack-api-usage-fingerprinting#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/atomist/sdm-pack-guava-deprecation.git"
+    "url": "https://github.com/atomist/sdm-pack-api-usage-fingerprinting.git"
   },
   "bugs": {
-    "url": "https://github.com/atomist/sdm-pack-guava-deprecation/issues"
+    "url": "https://github.com/atomist/sdm-pack-api-usage-fingerprinting/issues"
   },
   "keywords": [
     "atomist",

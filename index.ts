@@ -18,14 +18,12 @@ export { deprecatedApiFingerprintSupport } from "./lib/support";
 export { UsedApiExtractor } from "./lib/aspect/UsedApiExtractor";
 export {
     UsedApis,
-    ApiDeprecation,
     Annotation,
     ClassOrInterface,
     Method,
-    usesDeprecatedApis,
 } from "./lib/aspect/model";
 export {
-    createDeprecatedApiUsageAspect,
+    createApiUsageFingerprintAspect,
     UsedApiFPData,
-} from "./lib/aspect/deprecatedApiUsageAspect";
-export { createDeprecatedApiFingerprint } from "./lib/aspect/fingerprint";
+} from "./lib/aspect/apiUsageFingerprintAspect";
+export { createApiUsageFingerprint } from "./lib/aspect/fingerprint";

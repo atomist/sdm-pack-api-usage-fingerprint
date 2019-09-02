@@ -28,13 +28,13 @@ export interface UsedApiFPData {
     version: string;
 }
 
-export function createDeprecatedApiUsageAspect(
+export function createApiUsageFingerprintAspect(
     api: string,
     fingerprinter: (usedApis: UsedApis) => Array<FP<UsedApiFPData>>,
     targetTransform: CodeTransform<{ fp: FP<UsedApiFPData> }>): Aspect<UsedApiFPData> {
     return {
-        name: `deprecated-${api.toLowerCase()}-api-usage`,
-        displayName: `Used deprecated API versions for ${api}`,
+        name: `api-usage-${api}`,
+        displayName: `Used API versions for ${api}`,
         extract: async (p, pli) => {
             const usedApiExtractor = new UsedApiExtractor();
             const usedApis = await usedApiExtractor.getUsedApis(p as LocalProject, pli);
@@ -42,6 +42,6 @@ export function createDeprecatedApiUsageAspect(
         },
         apply: targetTransform,
         toDisplayableFingerprintName: name => name,
-        toDisplayableFingerprint: fp => `deprecated api ${fp.data.api}: ${fp.data.version}`,
+        toDisplayableFingerprint: fp => `API usage for ${fp.data.api}: ${fp.data.version}`,
     };
 }
