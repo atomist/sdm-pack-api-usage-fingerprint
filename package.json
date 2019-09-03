@@ -1,15 +1,15 @@
 {
-  "name": "@atomist/sdm-pack-api-usage-fingerprinting",
+  "name": "@atomist/sdm-pack-api-usage-fingerprint",
   "version": "0.1.0",
-  "description": "Extension pack for API usage fingerprinting",
+  "description": "Extension pack for API usage fingerprints",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/atomist/sdm-pack-api-usage-fingerprinting#readme",
+  "homepage": "https://github.com/atomist/sdm-pack-api-usage-fingerprint#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/atomist/sdm-pack-api-usage-fingerprinting.git"
+    "url": "https://github.com/atomist/sdm-pack-api-usage-fingerprint.git"
   },
   "bugs": {
-    "url": "https://github.com/atomist/sdm-pack-api-usage-fingerprinting/issues"
+    "url": "https://github.com/atomist/sdm-pack-api-usage-fingerprint/issues"
   },
   "keywords": [
     "atomist",
