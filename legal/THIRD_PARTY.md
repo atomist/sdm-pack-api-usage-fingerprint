@@ -1,8 +1,8 @@
-# `@atomist/sdm-pack-api-usage-fingerprinting`
+# `@atomist/sdm-pack-api-usage-fingerprint`
 
-`@atomist/sdm-pack-api-usage-fingerprinting` is licensed under Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0).
+`@atomist/sdm-pack-api-usage-fingerprint` is licensed under Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
-This page details all runtime OSS dependencies of `@atomist/sdm-pack-api-usage-fingerprinting`.
+This page details all runtime OSS dependencies of `@atomist/sdm-pack-api-usage-fingerprint`.
 
 ## Licenses
 
