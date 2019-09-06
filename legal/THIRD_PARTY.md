@@ -22,7 +22,7 @@ This page details all runtime OSS dependencies of `@atomist/sdm-pack-api-usage-f
 |[GPL-3.0](#gpl-30)|3|
 |[ISC](#isc)|81|
 |[MIT AND BSD-3-Clause](#mit-and-bsd-3-clause)|1|
-|[MIT](#mit)|893|
+|[MIT](#mit)|894|
 |[Public Domain](#public-domain)|1|
 |[Unlicense](#unlicense)|1|
 |[WTFPL](#wtfpl)|1|
@@ -1092,6 +1092,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`symbol-observable`|`1.2.0`|Ben Lesh|[https://github.com/blesh/symbol-observable](https://github.com/blesh/symbol-observable)|
 |`tapable`|`0.2.9`|Tobias Koppers @sokra|[https://github.com/webpack/tapable](https://github.com/webpack/tapable)|
 |`tar-stream`|`2.1.0`|Mathias Buus|[https://github.com/mafintosh/tar-stream](https://github.com/mafintosh/tar-stream)|
+|`temp-file`|`3.3.4`|Vladimir Krivosheev|[https://github.com/develar/temp-file](https://github.com/develar/temp-file)|
 |`text-hex`|`1.0.0`|Arnout Kazemier|[https://github.com/3rd-Eden/text-hex](https://github.com/3rd-Eden/text-hex)|
 |`through2-filter`|`3.0.0`|Bryce B. Baril|[https://github.com/brycebaril/through2-filter](https://github.com/brycebaril/through2-filter)|
 |`through2`|`2.0.5`|Rod Vagg|[https://github.com/rvagg/through2](https://github.com/rvagg/through2)|
