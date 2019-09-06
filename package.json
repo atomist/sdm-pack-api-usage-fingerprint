@@ -19,7 +19,10 @@
   ],
   "main": "./index.js",
   "types": "./index.d.ts",
-  "dependencies": {},
+  "dependencies": {
+    "fs-extra": "^8.1.0",
+    "temp-file": "^3.3.4"
+  },
   "peerDependencies": {
     "@atomist/automation-client": "^1.6.3",
     "@atomist/sdm": "^1.6.2",
