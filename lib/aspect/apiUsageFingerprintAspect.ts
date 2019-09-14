@@ -25,12 +25,12 @@ import { UsedApiExtractor } from "./UsedApiExtractor";
 
 export interface UsedApiFPData {
     api: string;
-    version: string;
+    versions: string | string[];
 }
 
 export function createApiUsageFingerprintAspect(
     api: string,
-    fingerprinter: (usedApis: UsedApis) => Array<FP<UsedApiFPData>>,
+    fingerprinter: (usedApis: UsedApis) => Array<FP<UsedApiFPData>> | FP<UsedApiFPData>,
     targetTransform: CodeTransform<{ fp: FP<UsedApiFPData> }>): Aspect<UsedApiFPData> {
     return {
         name: `api-usage-${api}`,
@@ -42,6 +42,6 @@ export function createApiUsageFingerprintAspect(
         },
         apply: targetTransform,
         toDisplayableFingerprintName: name => name,
-        toDisplayableFingerprint: fp => `API usage for ${fp.data.api}: ${fp.data.version}`,
+        toDisplayableFingerprint: fp => `API usage for ${fp.data.api}: ${fp.data.versions}`,
     };
 }

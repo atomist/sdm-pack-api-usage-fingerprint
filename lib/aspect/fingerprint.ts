@@ -30,3 +30,13 @@ export function createApiUsageFingerprint(api: string, version: string): FP<{api
         sha: sha256(JSON.stringify(version)),
     };
 }
+
+export function createApiUsageListFingerprint(api: string, versions: string[]): FP<{api: string, versions: string[]}> {
+    return {
+        data: { api: api.toLowerCase(), versions },
+        type: apiUsage,
+        version: "0.1.0",
+        name: `api-usage:${api}`,
+        sha: sha256(JSON.stringify(versions)),
+    };
+}

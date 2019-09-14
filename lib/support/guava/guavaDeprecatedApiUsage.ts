@@ -16,6 +16,7 @@
 
 import {
     configurationValue,
+    GraphClientFactory,
     LocalProject,
 } from "@atomist/automation-client";
 import {
@@ -29,13 +30,18 @@ import {
     FP,
 } from "@atomist/sdm-pack-fingerprints";
 import * as fs from "fs-extra";
+import * as _ from "lodash";
 import { TmpDir } from "temp-file";
 import {
     createApiUsageFingerprintAspect,
     UsedApiFPData,
 } from "../../aspect/apiUsageFingerprintAspect";
-import { createApiUsageFingerprint } from "../../aspect/fingerprint";
+import {
+    createApiUsageFingerprint,
+    createApiUsageListFingerprint,
+} from "../../aspect/fingerprint";
 import { UsedApis } from "../../aspect/model";
+import { GetFpByCommitSha } from "../../typings/types";
 
 export function usesDeprecatedApis(usedApis: UsedApis, deprecatedApis: ApiDeprecation[]): boolean {
     const usesDeprecatedMethods = deprecatedApis.filter(a => a.elementType === "method")
@@ -200,17 +206,23 @@ async function getGuavaMigrationTransforms(from: string, to: string): Promise<Co
     return transforms;
 }
 
-function getOldestApiVersion(sha: string): string {
-    // get the fingerprints of the sha
-    // extract the version
-    // sort
-    // return first
-    return undefined; // TODO
+async function getOldestApiVersion(workspace: string, sha: string): Promise<string> {
+    const graphClient = configurationValue<GraphClientFactory>("graphql.client.factory").create(workspace, {});
+    const result = await graphClient.query<GetFpByCommitSha.Query, GetFpByCommitSha.Variables>({
+        name: "GetFpByCommitSha",
+        variables: {
+            name: "api-usage:guava",
+            sha,
+        },
+    });
+    const fpData = _.first(_.flatten(result.Commit.map(c => c.analysis.map(a => a.data))).map(d => JSON.parse(d)));
+    const versions = fpData.versions as string[];
+    return _.first(versions.sort());
 }
 
 const createGuavaMigrationTransform: CodeTransform<{fp: FP<UsedApiFPData>}> = async (p, papi) => {
     const requestedTargetVersion = papi.parameters.fp.version;
-    const currentOldestApiVersion = getOldestApiVersion(papi.push.commit.sha);
+    const currentOldestApiVersion = await getOldestApiVersion(papi.context.workspaceId, papi.push.commit.sha);
     const transforms = getGuavaMigrationTransforms(currentOldestApiVersion, requestedTargetVersion);
     await Promise.all((await transforms).map(async t => t(p, papi)));
     return p;
@@ -219,8 +231,9 @@ const createGuavaMigrationTransform: CodeTransform<{fp: FP<UsedApiFPData>}> = as
 export const GuavaDeprecatedApiUsage: Aspect<UsedApiFPData> = createApiUsageFingerprintAspect("Guava",
     toGuavaDeprecationFingerprint, createGuavaMigrationTransform);
 
-function toGuavaDeprecationFingerprint(usedApis: UsedApis): Array<FP<UsedApiFPData>> {
-    return getGuavaDeprecationMatchResults(usedApis).map(v => createApiUsageFingerprint("guava", v));
+function toGuavaDeprecationFingerprint(usedApis: UsedApis): FP<UsedApiFPData> {
+    const versions = getGuavaDeprecationMatchResults(usedApis);
+    return createApiUsageListFingerprint("guava", versions);
 }
 
 function getGuavaDeprecationMatchResults(usedApis: UsedApis): string[] {
