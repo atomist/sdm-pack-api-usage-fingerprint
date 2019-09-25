@@ -18,7 +18,7 @@ import { CountAspect } from "@atomist/sdm-pack-aspect/lib/aspect/compose/commonT
 import {
     Aspect,
     fingerprintOf,
-    FP
+    FP,
 } from "@atomist/sdm-pack-fingerprint";
 import { createApiUsageFingerprintAspect } from "../../aspect/apiUsageFingerprintAspect";
 import {
@@ -74,4 +74,4 @@ export const GuavaDeprecationAspects: Aspect[] = [
     Guava21DeprecatedApiCountAspect,
     Guava22DeprecatedApiCountAspect,
     Guava23DeprecatedApiCountAspect,
-]
+];
