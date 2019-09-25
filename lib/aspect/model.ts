@@ -14,20 +14,8 @@
  * limitations under the License.
  */
 
-export interface UsedApis {
-    methods: Method[];
-    classesOrInterfaces: ClassOrInterface[];
-    annotations: Annotation[];
-}
-
-export interface Method {
-    fqn: string;
-}
-
-export interface ClassOrInterface {
-    fqn: string;
-}
-
-export interface Annotation {
-    fqn: string;
+export interface ApiDefinition {
+    methods: string[];
+    classes: string[];
+    annotations: string[];
 }

@@ -15,13 +15,12 @@
  */
 
 import { LocalProject } from "@atomist/automation-client";
-import { CodeTransform } from "@atomist/sdm";
 import {
     Aspect,
-    FP,
+    fingerprintOf,
 } from "@atomist/sdm-pack-fingerprints";
-import { UsedApis } from "./model";
-import { UsedApiExtractor } from "./UsedApiExtractor";
+import { ApiDefinition } from "./model";
+import { UsedApiLocator } from "./UsedApiLocator";
 
 export interface UsedApiFPData {
     api: string;
@@ -30,18 +29,16 @@ export interface UsedApiFPData {
 
 export function createApiUsageFingerprintAspect(
     api: string,
-    fingerprinter: (usedApis: UsedApis) => Array<FP<UsedApiFPData>> | FP<UsedApiFPData>,
-    targetTransform: CodeTransform<{ fp: FP<UsedApiFPData> }>): Aspect<UsedApiFPData> {
+    apiDefinition: ApiDefinition): Aspect<string[]> {
     return {
         name: `api-usage-${api}`,
         displayName: `Used API versions for ${api}`,
         extract: async (p, pli) => {
-            const usedApiExtractor = new UsedApiExtractor();
-            const usedApis = await usedApiExtractor.getUsedApis(p as LocalProject, pli);
-            return fingerprinter(usedApis);
+            const usedApiExtractor = new UsedApiLocator(apiDefinition);
+            const usedApis = await usedApiExtractor.locateUsedApis(p as LocalProject, pli);
+            return fingerprintOf({type: `api-usage-${api}`, data: usedApis});
         },
-        apply: targetTransform,
         toDisplayableFingerprintName: name => name,
-        toDisplayableFingerprint: fp => `API usage for ${fp.data.api}: ${fp.data.versions}`,
+        toDisplayableFingerprint: fp => `API usage for ${api}: ${fp.data.length} occurrences`,
     };
 }

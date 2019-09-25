@@ -23,34 +23,46 @@ import {
     spawnLog,
     StringCapturingProgressLog,
 } from "@atomist/sdm";
-import { UsedApis } from "./model";
+import { ApiDefinition } from "./model";
 
-export class UsedApiExtractor {
+async function determineBuildTool(p: LocalProject): Promise<string> {
+    if (await p.hasFile("pom.xml")) {
+        return "maven";
+    } else {
+        return "gradle";
+    }
+}
+
+export class UsedApiLocator {
     private readonly scanToolPath: string;
 
-    constructor() {
+    constructor(readonly apiDefinition: ApiDefinition) {
         this.scanToolPath = configurationValue<string>("sdm.aspect.deprecation.scanner.location");
     }
 
-    public async getUsedApis(p: LocalProject, pli: PushImpactListenerInvocation): Promise<UsedApis> {
+    public async locateUsedApis(p: LocalProject, pli: PushImpactListenerInvocation): Promise<string[]> {
         return this.getUsedApisForCompleteProject(p);
     }
 
-    private async getUsedApisForCompleteProject(p: LocalProject): Promise<UsedApis> {
+    private async getUsedApisForCompleteProject(p: LocalProject): Promise<string[]> {
         const log = new StringCapturingProgressLog();
-        const result = await spawnLog("java", ["-jar", this.scanToolPath, "-s", p.baseDir], {
+        const apiDefinitionJson = JSON.stringify(this.apiDefinition);
+        const buildTool = await determineBuildTool(p);
+        const apiDefinitionFile = this.writeToTempFile(apiDefinitionJson);
+        const result = await spawnLog("java",
+            ["-jar", this.scanToolPath, "--path", p.baseDir, "--build", buildTool, "--definitions", apiDefinitionFile ], {
             log,
         });
         if (result.code === 0) {
-           const output = log.log;
-           const parsed = JSON.parse(output);
-           return {
-               methods: parsed.methods.map(m => ({ fqn: m})),
-               annotations: parsed.annotations.map(m => ({ fqn: m})),
-               classesOrInterfaces: parsed.classes.map(m => ({ fqn: m})),
-           };
+            const output = log.log;
+            return JSON.parse(output);
         } else {
             return Promise.reject("Could not get API usage results");
         }
     }
+
+    private writeToTempFile(apiDefinitionJson: string): string {
+        return "";
+    }
+
 }

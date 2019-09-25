@@ -15,9 +15,9 @@
  */
 
 export { apiUsageFingerprintSupport } from "./lib/support";
-export { UsedApiExtractor } from "./lib/aspect/UsedApiExtractor";
+// export { UsedApiExtractor } from "./lib/aspect/UsedApiExtractor";
 export {
-    UsedApis,
+    ApiDefinition,
     Annotation,
     ClassOrInterface,
     Method,
