@@ -18,4 +18,5 @@ export interface ApiDefinition {
     methods: string[];
     classes: string[];
     annotations: string[];
+    fields?: string[];
 }

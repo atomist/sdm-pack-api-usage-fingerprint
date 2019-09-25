@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+import { CountAspect } from "@atomist/sdm-pack-aspect/lib/aspect/compose/commonTypes";
+import {
+    Aspect,
+    fingerprintOf,
+    FP
+} from "@atomist/sdm-pack-fingerprint";
 import { createApiUsageFingerprintAspect } from "../../aspect/apiUsageFingerprintAspect";
 import {
     Guava19DeprecatedApi,
@@ -28,3 +34,44 @@ export const Guava20DeprecatedApiAspect = createApiUsageFingerprintAspect("guava
 export const Guava21DeprecatedApiAspect = createApiUsageFingerprintAspect("guava-21-deprecated", Guava21DeprecatedApi);
 export const Guava22DeprecatedApiAspect = createApiUsageFingerprintAspect("guava-22-deprecated", Guava22DeprecatedApi);
 export const Guava23DeprecatedApiAspect = createApiUsageFingerprintAspect("guava-23-deprecated", Guava23DeprecatedApi);
+
+export const Guava19DeprecatedApiCountAspect: CountAspect = createApiUsageFingerprintCountAspect("guava-19-deprecated");
+export const Guava20DeprecatedApiCountAspect: CountAspect = createApiUsageFingerprintCountAspect("guava-20-deprecated");
+export const Guava21DeprecatedApiCountAspect: CountAspect = createApiUsageFingerprintCountAspect("guava-21-deprecated");
+export const Guava22DeprecatedApiCountAspect: CountAspect = createApiUsageFingerprintCountAspect("guava-22-deprecated");
+export const Guava23DeprecatedApiCountAspect: CountAspect = createApiUsageFingerprintCountAspect("guava-23-deprecated");
+
+function createApiUsageFingerprintCountAspect(api: string): CountAspect {
+    return {
+        name: `api-usage-${api}-count`,
+        displayName: `Number of ${api} API usages`,
+        extract: async () => [],
+        consolidate: async fps => {
+            function isApiUsageAspect(o: FP): o is FP<string[]> {
+                return (!!o.type && o.type === `api-usage-${api}`);
+            }
+            const apiUsageAspect = fps.find(isApiUsageAspect);
+            if (apiUsageAspect) {
+                return fingerprintOf({
+                    type: `api-usage-${api}-count`,
+                    data: {count: apiUsageAspect.data.length},
+                });
+            } else {
+                return undefined;
+            }
+        },
+    };
+}
+
+export const GuavaDeprecationAspects: Aspect[] = [
+    Guava19DeprecatedApiAspect,
+    Guava20DeprecatedApiAspect,
+    Guava21DeprecatedApiAspect,
+    Guava22DeprecatedApiAspect,
+    Guava23DeprecatedApiAspect,
+    Guava19DeprecatedApiCountAspect,
+    Guava20DeprecatedApiCountAspect,
+    Guava21DeprecatedApiCountAspect,
+    Guava22DeprecatedApiCountAspect,
+    Guava23DeprecatedApiCountAspect,
+]

@@ -22,3 +22,6 @@ export {
     createApiUsageFingerprintAspect,
     UsedApiFPData,
 } from "./lib/aspect/apiUsageFingerprintAspect";
+export {
+    GuavaDeprecationAspects,
+} from "./lib/support/guava/guavaDeprecatedApiAspects";
