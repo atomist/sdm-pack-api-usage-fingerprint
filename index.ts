@@ -15,15 +15,10 @@
  */
 
 export { apiUsageFingerprintSupport } from "./lib/support";
-// export { UsedApiExtractor } from "./lib/aspect/UsedApiExtractor";
 export {
     ApiDefinition,
-    Annotation,
-    ClassOrInterface,
-    Method,
 } from "./lib/aspect/model";
 export {
     createApiUsageFingerprintAspect,
     UsedApiFPData,
 } from "./lib/aspect/apiUsageFingerprintAspect";
-export { createApiUsageFingerprint } from "./lib/aspect/fingerprint";
