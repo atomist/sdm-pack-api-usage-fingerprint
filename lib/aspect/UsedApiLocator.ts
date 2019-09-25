@@ -23,6 +23,12 @@ import {
     spawnLog,
     StringCapturingProgressLog,
 } from "@atomist/sdm";
+import {
+    writeFile,
+} from "fs-extra";
+import {
+    TmpDir,
+} from "temp-file";
 import { ApiDefinition } from "./model";
 
 async function determineBuildTool(p: LocalProject): Promise<string> {
@@ -48,7 +54,7 @@ export class UsedApiLocator {
         const log = new StringCapturingProgressLog();
         const apiDefinitionJson = JSON.stringify(this.apiDefinition);
         const buildTool = await determineBuildTool(p);
-        const apiDefinitionFile = this.writeToTempFile(apiDefinitionJson);
+        const apiDefinitionFile = await writeToTempFile(apiDefinitionJson);
         const result = await spawnLog("java",
             ["-jar", this.scanToolPath, "--path", p.baseDir, "--build", buildTool, "--definitions", apiDefinitionFile ], {
             log,
@@ -60,9 +66,11 @@ export class UsedApiLocator {
             return Promise.reject("Could not get API usage results");
         }
     }
+}
 
-    private writeToTempFile(apiDefinitionJson: string): string {
-        return "";
-    }
-
+async function writeToTempFile(apiDefinitionJson: string): Promise<string> {
+    const tempDir = new TmpDir();
+    const file = await tempDir.getTempFile({prefix: "api-definition", suffix: ".json"});
+    await writeFile(file, apiDefinitionJson);
+    return file;
 }
