@@ -18,7 +18,7 @@ import { LocalProject } from "@atomist/automation-client";
 import {
     Aspect,
     fingerprintOf,
-} from "@atomist/sdm-pack-fingerprints";
+} from "@atomist/sdm-pack-fingerprint";
 import { ApiDefinition } from "./model";
 import { UsedApiLocator } from "./UsedApiLocator";
 

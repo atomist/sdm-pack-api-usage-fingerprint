@@ -20,6 +20,7 @@
   "main": "./index.js",
   "types": "./index.d.ts",
   "dependencies": {
+    "@atomist/sdm-pack-fingerprint": "^5.0.1-master.20190919164505",
     "fs-extra": "^8.1.0",
     "temp-file": "^3.3.4"
   },
@@ -27,7 +28,6 @@
     "@atomist/automation-client": "^1.7.0",
     "@atomist/sdm": "^1.7.0",
     "@atomist/sdm-core": "^1.7.0",
-    "@atomist/sdm-pack-fingerprints": "^5.0.0",
     "@atomist/sdm-pack-aspect": "^1.0.0"
   },
   "devDependencies": {
@@ -35,7 +35,6 @@
     "@atomist/sdm": "^1.7.1-master.20190923002339",
     "@atomist/sdm-core": "^1.7.1-master.20190923002116",
     "@atomist/sdm-pack-aspect": "^1.0.0-master.20190920223737",
-    "@atomist/sdm-pack-fingerprints": "^5.0.0-master.20190903060131",
     "@atomist/sdm-pack-sloc": "^1.0.3-master.20190709171721",
     "@types/mocha": "^5.2.7",
     "@types/power-assert": "^1.5.0",
