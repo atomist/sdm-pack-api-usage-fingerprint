@@ -60,6 +60,8 @@ function createApiUsageFingerprintCountAspect(api: string): CountAspect {
                 return undefined;
             }
         },
+        toDisplayableFingerprintName: () => api,
+        toDisplayableFingerprint: fp => `${fp.data.count}`,
     };
 }
 

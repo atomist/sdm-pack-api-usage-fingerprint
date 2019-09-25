@@ -24,13 +24,12 @@ import {
     IsMaven,
 } from "@atomist/sdm-pack-spring";
 
-export const Guava19DeprecationTransform: CodeTransform = async p => {
-    // do the transforms
+export const Guava22DeprecationTransform: CodeTransform = async p => {
     return p;
 };
 
-export const Guava19DeprecationAutofix: AutofixRegistration = {
+export const Guava22DeprecationAutofix: AutofixRegistration = {
     name: "guava-19-deprecation-transform",
     pushTest: anySatisfied(IsMaven, IsGradle),
-    transform: Guava19DeprecationTransform,
+    transform: Guava22DeprecationTransform,
 };

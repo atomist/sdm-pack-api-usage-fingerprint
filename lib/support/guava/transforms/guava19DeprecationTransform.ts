@@ -25,7 +25,6 @@ import {
 } from "@atomist/sdm-pack-spring";
 
 export const Guava19DeprecationTransform: CodeTransform = async p => {
-    // do the transforms
     return p;
 };
 
