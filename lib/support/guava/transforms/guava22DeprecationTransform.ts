@@ -29,7 +29,7 @@ export const Guava22DeprecationTransform: CodeTransform = async p => {
 };
 
 export const Guava22DeprecationAutofix: AutofixRegistration = {
-    name: "guava-19-deprecation-transform",
+    name: "guava-22-deprecation-transform",
     pushTest: anySatisfied(IsMaven, IsGradle),
     transform: Guava22DeprecationTransform,
 };
