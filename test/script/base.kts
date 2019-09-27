@@ -77,7 +77,7 @@ class MavenClassPathResolver : ClasspathResolver {
     }
 }
 
-class ExecuteTransformCommand(val transformer: (CompilationUnit, File) -> Unit) : CliktCommand() {
+class ExecuteTransformCommand(val transformers: List<(CompilationUnit, File) -> Unit>) : CliktCommand() {
     val path: String by option(help = "Project root path").required()
     val srcFolder: String by option(help = "Sources path").default("src/main/java")
     val testSrcFolder: String by option(help = "Test sources path").default("src/test/java")
@@ -92,7 +92,7 @@ class ExecuteTransformCommand(val transformer: (CompilationUnit, File) -> Unit) 
                 .forEach { javaFile: String ->
                     val file = File(javaFile)
                     val parsed = parser.parse(File(javaFile))
-                    parsed.ifSuccessful { cu -> transformer(cu, file) }
+                    parsed.ifSuccessful { cu -> transformers.forEach { it(cu, file) } }
                 }
     }
 

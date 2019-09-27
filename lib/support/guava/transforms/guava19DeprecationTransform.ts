@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { astUtils } from "@atomist/automation-client";
 import {
     anySatisfied,
     AutofixRegistration,
@@ -23,8 +24,18 @@ import {
     IsGradle,
     IsMaven,
 } from "@atomist/sdm-pack-spring";
+import { createRefactoringKotlinScriptTransform } from "./baseTransforms";
 
-export const Guava19DeprecationTransform: CodeTransform = async p => {
+export const Guava19DeprecationTransform: CodeTransform = async (p, papi) => {
+    const script = `
+val transformers = listOf(
+    replaceMethodOnSameClass("com.google.common.base.Converter.apply(A)", "convert"),
+    replaceMethodOnSameClass("com.google.common.collect.Range.apply(C)", "contains")
+    replaceMethodOnSameClass("com.google.common.base.CharMatcher.apply(Character)", "matches")
+)
+ExecuteTransformCommand(transformers).main(args)
+    `;
+    (await createRefactoringKotlinScriptTransform(script))(p, papi);
     return p;
 };
 
