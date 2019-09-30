@@ -22,7 +22,7 @@ import * as assert from "power-assert";
 import { TmpDir } from "temp-file";
 import { Guava19DeprecationTransform } from "../../../../lib/support/guava/transforms/guava19DeprecationTransform";
 
-xdescribe("Guava deprecation transforms", async () => {
+xdescribe("Guava deprecation transforms", () => {
     before("set scanner location", () => {
         process.env.API_USAGE_TRANSFORM_SCRIPT_DIR = __dirname;
     });
