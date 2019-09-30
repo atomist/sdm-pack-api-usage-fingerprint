@@ -23,8 +23,14 @@ import {
     IsGradle,
     IsMaven,
 } from "@atomist/sdm-pack-spring";
+import { createRefactoringKotlinScriptTransform } from "./baseTransforms";
 
-export const Guava21DeprecationTransform: CodeTransform = async p => {
+export const Guava21DeprecationTransform: CodeTransform = async (p, papi) => {
+    const script = `
+val transformers = listOf()
+ExecuteTransformCommand(transformers).main(args)
+    `;
+    await (await createRefactoringKotlinScriptTransform(script))(p, papi);
     return p;
 };
 
