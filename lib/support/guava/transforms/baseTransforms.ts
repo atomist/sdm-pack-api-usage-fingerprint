@@ -29,14 +29,17 @@ import { TmpDir } from "temp-file";
 export async function createRefactoringKotlinScriptTransform(script: string): Promise<CodeTransform> {
     return async p => {
         const tempFile = await new TmpDir().getTempFile({prefix: "script", suffix: ".kts"});
-        const baseScriptsLocation = configurationValue<string>("sdm.aspect.deprecation.guava.basescript.dir");
+        const baseScriptsLocation = configurationValue<string>("sdm.aspect.deprecation.guava.basescript.dir",
+            process.env.API_USAGE_TRANSFORM_SCRIPT_DIR);
         const kScript = `#!/usr/bin/env kscript
 @file:Include("${baseScriptsLocation}/refactors.kts")
+@file:Include("${baseScriptsLocation}/base.kts")
 ${script}`;
         await fs.writeFile(tempFile, kScript);
         const localProject = p as LocalProject;
         const log = new StringCapturingProgressLog();
-        await spawnLog("kscript", [tempFile, "--path", localProject.baseDir], {
+        const build = (!!(await p.getFile("pom.xml"))) ? "maven" : "gradle";
+        await spawnLog("kscript", [tempFile, `--path=${localProject.baseDir}`, `--build=${build}`], {
             log,
         });
         return p;

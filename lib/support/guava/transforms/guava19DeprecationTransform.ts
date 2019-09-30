@@ -30,12 +30,15 @@ export const Guava19DeprecationTransform: CodeTransform = async (p, papi) => {
     const script = `
 val transformers = listOf(
     replaceMethodOnSameClass("com.google.common.base.Converter.apply(A)", "convert"),
-    replaceMethodOnSameClass("com.google.common.collect.Range.apply(C)", "contains")
-    replaceMethodOnSameClass("com.google.common.base.CharMatcher.apply(Character)", "matches")
+    replaceMethodOnSameClass("com.google.common.collect.Range.apply(C)", "contains"),
+    replaceMethodOnSameClass("com.google.common.base.CharMatcher.apply(Character)", "matches"),
+    replaceMethodOnSameClass("com.google.common.cache.LoadingCache.apply(K)", "getUnchecked"),
+    replaceMethodOnSameClass("com.google.common.hash.BloomFilter.apply(T)", "mightContain"),
+    replaceMethodOnSameClass("com.google.common.collect.ArrayTable.remove(Object, Object)", "erase")
 )
 ExecuteTransformCommand(transformers).main(args)
     `;
-    (await createRefactoringKotlinScriptTransform(script))(p, papi);
+    await (await createRefactoringKotlinScriptTransform(script))(p, papi);
     return p;
 };
 

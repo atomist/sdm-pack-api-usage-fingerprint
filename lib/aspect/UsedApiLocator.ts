@@ -24,11 +24,10 @@ import {
     StringCapturingProgressLog,
 } from "@atomist/sdm";
 import {
+    readFile,
     writeFile,
 } from "fs-extra";
-import {
-    TmpDir,
-} from "temp-file";
+import { TmpDir } from "temp-file";
 import { ApiDefinition } from "./model";
 
 async function determineBuildTool(p: LocalProject): Promise<string> {
@@ -43,7 +42,7 @@ export class UsedApiLocator {
     private readonly scanToolPath: string;
 
     constructor(readonly apiDefinition: ApiDefinition) {
-        this.scanToolPath = configurationValue<string>("sdm.aspect.deprecation.scanner.location");
+        this.scanToolPath = configurationValue<string>("sdm.aspect.apiusage.scanner.location", process.env.API_USAGE_SCANNER_LOCATION);
     }
 
     public async locateUsedApis(p: LocalProject, pli: PushImpactListenerInvocation): Promise<string[]> {
@@ -55,17 +54,29 @@ export class UsedApiLocator {
         const apiDefinitionJson = JSON.stringify(this.apiDefinition);
         const buildTool = await determineBuildTool(p);
         const apiDefinitionFile = await writeToTempFile(apiDefinitionJson);
+        const outputFile = await getTempOutputFile();
         const result = await spawnLog("java",
-            ["-jar", this.scanToolPath, "--path", p.baseDir, "--build", buildTool, "--definitions", apiDefinitionFile ], {
+            [
+                "-jar", this.scanToolPath,
+                "--path", p.baseDir,
+                "--build", buildTool,
+                "--definitions", apiDefinitionFile,
+                "--output-file", outputFile,
+            ], {
             log,
         });
         if (result.code === 0) {
-            const output = log.log;
+            const output = await readFile(outputFile, "UTF-8");
             return JSON.parse(output);
         } else {
             return Promise.reject("Could not get API usage results");
         }
     }
+}
+
+async function getTempOutputFile(): Promise<string> {
+    const tempDir = new TmpDir();
+    return tempDir.getTempFile({prefix: "output", suffix: ".json"});
 }
 
 async function writeToTempFile(apiDefinitionJson: string): Promise<string> {
