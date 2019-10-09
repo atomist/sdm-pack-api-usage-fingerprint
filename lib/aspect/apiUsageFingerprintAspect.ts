@@ -34,9 +34,14 @@ export function createApiUsageFingerprintAspect(
         name: `api-usage-${api}`,
         displayName: `Used API versions for ${api}`,
         extract: async (p, pli) => {
-            const usedApiExtractor = new UsedApiLocator(apiDefinition);
-            const usedApis = await usedApiExtractor.locateUsedApis(p as LocalProject, pli);
-            return fingerprintOf({type: `api-usage-${api}`, data: usedApis});
+            const canHandle = await p.hasFile("pom.xml") || await p.hasFile("build.gradle");
+            if (canHandle) {
+                const usedApiExtractor = new UsedApiLocator(apiDefinition);
+                const usedApis = await usedApiExtractor.locateUsedApis(p as LocalProject, pli);
+                return fingerprintOf({type: `api-usage-${api}`, data: usedApis});
+            } else {
+                return undefined;
+            }
         },
         toDisplayableFingerprintName: name => name,
         toDisplayableFingerprint: fp => `API usage for ${api}: ${fp.data.length} occurrences`,
