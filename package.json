@@ -20,7 +20,7 @@
   "main": "./index.js",
   "types": "./index.d.ts",
   "dependencies": {
-    "@atomist/sdm-pack-fingerprint": "^5.0.1-master.20190919164505",
+    "@atomist/sdm-pack-fingerprint": "^5.0.1-master.20191006120505",
     "@atomist/sdm-pack-spring": "^2.0.2-master.20190919184647",
     "fs-extra": "^8.1.0",
     "temp-file": "^3.3.4"
