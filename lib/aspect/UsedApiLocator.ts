@@ -69,7 +69,11 @@ export class UsedApiLocator {
             const output = await readFile(outputFile, "UTF-8");
             return JSON.parse(output);
         } else {
-            return Promise.reject("Could not get API usage results");
+            const error = {
+                message: "Could not get API usage results",
+                log: log.log,
+            };
+            return Promise.reject(error);
         }
     }
 }
