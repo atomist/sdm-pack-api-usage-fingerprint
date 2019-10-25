@@ -169,7 +169,7 @@ public class App {
         assert(fingerprint.data.indexOf("src/main/java/test/MyTest.java:10") >= 0);
     }).enableTimeouts(false);
 
-    it("should find Guava 19 usage in multi module code", async () => {
+    it("should find Guava 19 usage in maven multi module code", async () => {
         const tempDir = new TmpDir();
         const project =  new NodeFsLocalProject("testing", await tempDir.getTempDir());
         const parentPom = `<?xml version="1.0" encoding="UTF-8"?>
@@ -241,6 +241,49 @@ public class App {
         await project.addFile("pom.xml", parentPom);
         await project.addFile("one/pom.xml", pomOne);
         await project.addFile("two/pom.xml", pomTwo);
+        await project.addFile("one/src/main/java/test/MyTest.java", javaFile);
+        await project.addFile("two/src/main/java/test/MyTest2.java", javaFile);
+        const fingerprints = toArray(await Guava19DeprecatedApiAspect.extract(project, undefined));
+        assert.strictEqual(fingerprints.length, 3);
+    }).enableTimeouts(false);
+
+    it("should find Guava 19 usage in gradle multi module code", async () => {
+        const tempDir = new TmpDir();
+        const project =  new NodeFsLocalProject("testing", await tempDir.getTempDir());
+        const parentGradle = `
+subprojects {
+    apply plugin: "java"
+
+    repositories {
+        jcenter()
+    }
+}
+`;
+
+        const settings = `
+include "one"
+include "two"
+`;
+
+        const childGradle = `
+dependencies {
+    compile "com.google.guava:guava:19.0"
+}
+`;
+        const javaFile = `package test;
+
+public class App {
+    public static void main(String[] args) {
+        com.google.common.collect.Range range = com.google.common.collect.Range.all();
+        Comparable o = null;
+        range.apply(o);
+    }
+}
+`;
+        await project.addFile("build.gradle", parentGradle);
+        await project.addFile("settings.gradle", settings);
+        await project.addFile("one/build.gradle", childGradle);
+        await project.addFile("two/build.gradle", childGradle);
         await project.addFile("one/src/main/java/test/MyTest.java", javaFile);
         await project.addFile("two/src/main/java/test/MyTest2.java", javaFile);
         const fingerprints = toArray(await Guava19DeprecatedApiAspect.extract(project, undefined));
