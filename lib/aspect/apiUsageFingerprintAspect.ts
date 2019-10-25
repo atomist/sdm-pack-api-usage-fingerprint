@@ -14,17 +14,26 @@
  * limitations under the License.
  */
 
-import { LocalProject } from "@atomist/automation-client";
+import {
+    LocalProject,
+    Project,
+} from "@atomist/automation-client";
+import { File } from "@atomist/automation-client/lib/project/File";
 import {
     Aspect,
     fingerprintOf,
 } from "@atomist/sdm-pack-fingerprint";
+import * as path from "path";
 import { ApiDefinition } from "./model";
 import { UsedApiLocator } from "./UsedApiLocator";
 
 export interface UsedApiFPData {
     api: string;
     versions: string | string[];
+}
+
+async function getBuildFiles(p: Project): Promise<File[]> {
+    return p.getFiles(["**/build.gradle", "**/pom.xml"]);
 }
 
 export function createApiUsageFingerprintAspect(
@@ -34,11 +43,43 @@ export function createApiUsageFingerprintAspect(
         name: `api-usage-${api}`,
         displayName: `Used API versions for ${api}`,
         extract: async (p, pli) => {
-            const canHandle = await p.hasFile("pom.xml") || await p.hasFile("build.gradle");
-            if (canHandle) {
-                const usedApiExtractor = new UsedApiLocator(apiDefinition);
-                const usedApis = await usedApiExtractor.locateUsedApis(p as LocalProject, pli);
-                return fingerprintOf({type: `api-usage-${api}`, data: usedApis});
+            const buildFiles = await getBuildFiles(p);
+            if (buildFiles && buildFiles.length > 0) {
+                const fps = await Promise.all(buildFiles.map(async bf => {
+                    const lastIndex = bf.path.lastIndexOf("/");
+                    const directory = lastIndex === -1 ? "" : bf.path.slice(0, bf.path.lastIndexOf("/"));
+                    if (await p.hasDirectory(path.join(directory, "src"))) {
+                        const usedApiExtractor = new UsedApiLocator(apiDefinition);
+                        try {
+                            const usedApis = await usedApiExtractor.locateUsedApis(p as LocalProject, directory, pli);
+                            return fingerprintOf(
+                                {
+                                    type: `api-usage-${api}`,
+                                    name: `api-usage-${api}:${directory === "" ? "root" : directory}`,
+                                    data: usedApis,
+                                });
+                        } catch (e) {
+                            return fingerprintOf(
+                                {
+                                    type: `api-usage-${api}`,
+                                    name: `api-usage-${api}:${directory === "" ? "root" : directory}`,
+                                    data: {
+                                        error: e,
+                                    },
+                                });
+                        }
+                    } else {
+                        return fingerprintOf(
+                            {
+                                type: `api-usage-${api}`,
+                                name: `api-usage-${api}:${directory === "" ? "root" : directory}`,
+                                data: {
+                                    error: "No source folder found",
+                                },
+                            });
+                    }
+                }));
+                return fps.filter(fp => !!fp);
             } else {
                 return undefined;
             }

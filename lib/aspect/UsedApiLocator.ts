@@ -27,6 +27,7 @@ import {
     readFile,
     writeFile,
 } from "fs-extra";
+import * as path from "path";
 import { TmpDir } from "temp-file";
 import { ApiDefinition } from "./model";
 
@@ -45,11 +46,11 @@ export class UsedApiLocator {
         this.scanToolPath = configurationValue<string>("sdm.aspect.apiusage.scanner.location", process.env.API_USAGE_SCANNER_LOCATION);
     }
 
-    public async locateUsedApis(p: LocalProject, pli: PushImpactListenerInvocation): Promise<string[]> {
-        return this.getUsedApisForCompleteProject(p);
+    public async locateUsedApis(p: LocalProject, subDirectory: string, pli: PushImpactListenerInvocation): Promise<string[]> {
+        return this.getUsedApisForCompleteProject(p, subDirectory);
     }
 
-    private async getUsedApisForCompleteProject(p: LocalProject): Promise<string[]> {
+    private async getUsedApisForCompleteProject(p: LocalProject, subDirectory: string): Promise<string[]> {
         const log = new StringCapturingProgressLog();
         const apiDefinitionJson = JSON.stringify(this.apiDefinition);
         const buildTool = await determineBuildTool(p);
@@ -58,7 +59,7 @@ export class UsedApiLocator {
         const result = await spawnLog("java",
             [
                 "-jar", this.scanToolPath,
-                "--path", p.baseDir,
+                "--path", path.join(p.baseDir, subDirectory),
                 "--build", buildTool,
                 "--definitions", apiDefinitionFile,
                 "--output-file", outputFile,

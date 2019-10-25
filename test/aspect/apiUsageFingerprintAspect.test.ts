@@ -168,4 +168,82 @@ public class App {
         assert(fingerprint.data.indexOf("src/main/java/test/MyTest.java:9") >= 0);
         assert(fingerprint.data.indexOf("src/main/java/test/MyTest.java:10") >= 0);
     }).enableTimeouts(false);
+
+    it("should find Guava 19 usage in multi module code", async () => {
+        const tempDir = new TmpDir();
+        const project =  new NodeFsLocalProject("testing", await tempDir.getTempDir());
+        const parentPom = `<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.atomist</groupId>
+  <artifactId>test-example-parent</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <name>test-example</name>
+  <packaging>pom</packaging>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+
+  <modules>
+    <module>one</module>
+    <module>two</module>
+  </modules>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>19.0</version>
+    </dependency>
+  </dependencies>
+</project>`;
+        const pomOne = `
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+      <groupId>com.atomist</groupId>
+      <artifactId>test-example-parent</artifactId>
+      <version>1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>test-example-one</artifactId>
+  <name>test-one</name>
+</project>
+`;
+        const pomTwo = `
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+      <groupId>com.atomist</groupId>
+      <artifactId>test-example-parent</artifactId>
+      <version>1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>test-example-two</artifactId>
+  <name>test-two</name>
+</project>
+`;
+        const javaFile = `package test;
+
+public class App {
+    public static void main(String[] args) {
+        com.google.common.collect.Range range = com.google.common.collect.Range.all();
+        Comparable o = null;
+        range.apply(o);
+    }
+}
+`;
+        await project.addFile("pom.xml", parentPom);
+        await project.addFile("one/pom.xml", pomOne);
+        await project.addFile("two/pom.xml", pomTwo);
+        await project.addFile("one/src/main/java/test/MyTest.java", javaFile);
+        await project.addFile("two/src/main/java/test/MyTest2.java", javaFile);
+        const fingerprints = toArray(await Guava19DeprecatedApiAspect.extract(project, undefined));
+        assert.strictEqual(fingerprints.length, 3);
+    }).enableTimeouts(false);
 }).enableTimeouts(false);
