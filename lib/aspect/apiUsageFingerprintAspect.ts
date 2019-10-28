@@ -45,40 +45,41 @@ export function createApiUsageFingerprintAspect(
         extract: async (p, pli) => {
             const buildFiles = await getBuildFiles(p);
             if (buildFiles && buildFiles.length > 0) {
-                const fps = await Promise.all(buildFiles.map(async bf => {
-                    const lastIndex = bf.path.lastIndexOf("/");
-                    const directory = lastIndex === -1 ? "" : bf.path.slice(0, bf.path.lastIndexOf("/"));
+                const fps = [];
+                for (const buildFile of buildFiles) {
+                    const lastIndex = buildFile.path.lastIndexOf("/");
+                    const directory = lastIndex === -1 ? "" : buildFile.path.slice(0, buildFile.path.lastIndexOf("/"));
                     if (await p.hasDirectory(path.join(directory, "src"))) {
                         const usedApiExtractor = new UsedApiLocator(apiDefinition);
                         try {
                             const usedApis = await usedApiExtractor.locateUsedApis(p as LocalProject, directory, pli);
-                            return fingerprintOf(
+                            fps.push(fingerprintOf(
                                 {
                                     type: `api-usage-${api}`,
                                     name: `api-usage-${api}:${directory === "" ? "root" : directory}`,
                                     data: usedApis,
-                                });
+                                }));
                         } catch (e) {
-                            return fingerprintOf(
+                            fps.push(fingerprintOf(
                                 {
                                     type: `api-usage-${api}`,
                                     name: `api-usage-${api}:${directory === "" ? "root" : directory}`,
                                     data: {
                                         error: e,
                                     },
-                                });
+                                }));
                         }
                     } else {
-                        return fingerprintOf(
+                        fps.push(fingerprintOf(
                             {
                                 type: `api-usage-${api}`,
                                 name: `api-usage-${api}:${directory === "" ? "root" : directory}`,
                                 data: {
                                     error: "No source folder found",
                                 },
-                            });
+                            }));
                     }
-                }));
+                }
                 return fps.filter(fp => !!fp);
             } else {
                 return undefined;
