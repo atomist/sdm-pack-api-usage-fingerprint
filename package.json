@@ -20,8 +20,6 @@
   "main": "./index.js",
   "types": "./index.d.ts",
   "dependencies": {
-    "@atomist/sdm-pack-fingerprint": "^5.0.1-master.20191006120505",
-    "@atomist/sdm-pack-spring": "^2.0.2-master.20190919184647",
     "fs-extra": "^8.1.0",
     "temp-file": "^3.3.4"
   },
@@ -29,27 +27,31 @@
     "@atomist/automation-client": "^1.7.0",
     "@atomist/sdm": "^1.7.0",
     "@atomist/sdm-core": "^1.7.0",
-    "@atomist/sdm-pack-aspect": "^1.0.0"
+    "@atomist/sdm-pack-aspect": "^1.0.0",
+    "@atomist/sdm-pack-fingerprint": "^5.0.0",
+    "@atomist/sdm-pack-spring": "^2.0.1"
   },
   "devDependencies": {
-    "@atomist/automation-client": "^1.7.1-master.20190923001835",
-    "@atomist/sdm": "^1.7.1-master.20190923002339",
-    "@atomist/sdm-core": "^1.7.1-master.20190923002116",
-    "@atomist/sdm-pack-aspect": "^1.0.0-master.20190925060605",
-    "@atomist/sdm-pack-sloc": "^1.0.3-master.20190709171721",
+    "@atomist/automation-client": "1.8.0-master.20191028235651",
+    "@atomist/sdm": "1.8.0-master.20191011130951",
+    "@atomist/sdm-core": "1.8.0-master.20191030155232",
+    "@atomist/sdm-pack-aspect": "1.0.0-master.20191030192334",
+    "@atomist/sdm-pack-fingerprint": "5.0.1-master.20191006120505",
+    "@atomist/sdm-pack-sloc": "2.0.0-master.20191004134721",
+    "@atomist/sdm-pack-spring": "2.0.2-master.20191017114359",
     "@types/mocha": "^5.2.7",
     "@types/power-assert": "^1.5.0",
     "espower-typescript": "^9.0.2",
     "lodash": "^4.17.15",
-    "mocha": "^6.1.4",
+    "mocha": "^6.2.2",
     "npm-run-all": "^4.1.5",
     "power-assert": "^1.6.1",
-    "rimraf": "^2.6.3",
+    "rimraf": "^3.0.0",
     "supervisor": "^0.12.0",
-    "ts-node": "^8.3.0",
-    "tslint": "^5.19.0",
+    "ts-node": "^8.4.1",
+    "tslint": "^5.20.0",
     "typedoc": "^0.15.0",
-    "typescript": "^3.6.3"
+    "typescript": "^3.6.4"
   },
   "directories": {
     "test": "test"
