@@ -19,6 +19,7 @@ import {
 } from "@atomist/automation-client";
 import { toArray } from "@atomist/sdm-core/lib/util/misc/array";
 import { sha256 } from "@atomist/sdm-pack-fingerprint";
+import * as _ from "lodash";
 import * as assert from "power-assert";
 import { TmpDir } from "temp-file";
 import {
@@ -257,15 +258,8 @@ public class App {
         await project.addFile("two/src/main/java/test/App.java", javaFile);
         const fingerprints = toArray(await Guava19DeprecatedApiAspect.extract(project, undefined));
         assert.strictEqual(fingerprints.length, 1);
-        assert.deepEqual(fingerprints[0].data, [
-            {
-                directory: "one",
-                usedApis: ["src/main/java/test/MyTest.java:7"],
-            },
-            {
-                directory: "two",
-                usedApis: ["src/main/java/test/MyTest2.java:7"],
-            }]);
+        assert(fingerprints[0].data.some(d => d.directory === "one" && _.isEqual(d.usedApis, ["src/main/java/test/App.java:7"])));
+        assert(fingerprints[0].data.some(d => d.directory === "two" && _.isEqual(d.usedApis, ["src/main/java/test/App.java:7"])));
         assert.strictEqual(fingerprints[0].sha, trueSha);
 
     }).enableTimeouts(false);
@@ -310,15 +304,8 @@ public class App {
         await project.addFile("one/src/main/java/test/App.java", javaFile);
         await project.addFile("two/src/main/java/test/App.java", javaFile);
         const fingerprints = toArray(await Guava19DeprecatedApiAspect.extract(project, undefined));
-        assert.deepEqual(fingerprints[0].data, [
-            {
-                directory: "one",
-                usedApis: ["src/main/java/test/App.java:7"],
-            },
-            {
-                directory: "two",
-                usedApis: ["src/main/java/test/App.java:7"],
-            }]);
+        assert(fingerprints[0].data.some(d => d.directory === "one" && _.isEqual(d.usedApis, ["src/main/java/test/App.java:7"])));
+        assert(fingerprints[0].data.some(d => d.directory === "two" && _.isEqual(d.usedApis, ["src/main/java/test/App.java:7"])));
         assert.strictEqual(fingerprints[0].sha, trueSha);
     }).enableTimeouts(false);
 }).enableTimeouts(false);
