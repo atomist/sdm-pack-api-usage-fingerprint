@@ -20,7 +20,10 @@ import {
     fingerprintOf,
     FP,
 } from "@atomist/sdm-pack-fingerprint";
-import { createApiUsageFingerprintAspect } from "../../aspect/apiUsageFingerprintAspect";
+import {
+    createApiUsageFingerprintAspect,
+    UsedApiFPData,
+} from "../../aspect/apiUsageFingerprintAspect";
 import {
     Guava19DeprecatedApi,
     Guava20DeprecatedApi,
@@ -47,15 +50,23 @@ function createApiUsageFingerprintCountAspect(api: string): CountAspect {
         displayName: `Number of ${api} API usages`,
         extract: async () => [],
         consolidate: async fps => {
-            function isApiUsageAspect(o: FP): o is FP<string[]> {
+            function isApiUsageAspect(o: FP): o is FP<UsedApiFPData[]> {
                 return (!!o.type && o.type === `api-usage-${api}`);
             }
             const apiUsageAspect = fps.find(isApiUsageAspect);
             if (apiUsageAspect) {
-                return fingerprintOf({
-                    type: `api-usage-${api}-count`,
-                    data: {count: apiUsageAspect.data.length},
-                });
+                if (apiUsageAspect.data.length > 0) {
+                    const count = apiUsageAspect.data.reduce((pv, cv) => pv + cv.usedApis.length, 0);
+                    return fingerprintOf({
+                        type: `api-usage-${api}-count`,
+                        data: { count },
+                    });
+                } else {
+                    return fingerprintOf({
+                        type: `api-usage-${api}-count`,
+                        data: {count: 0},
+                    });
+                }
             } else {
                 return undefined;
             }
