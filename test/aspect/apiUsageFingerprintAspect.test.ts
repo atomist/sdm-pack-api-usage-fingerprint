@@ -253,8 +253,8 @@ public class App {
         await project.addFile("pom.xml", parentPom);
         await project.addFile("one/pom.xml", pomOne);
         await project.addFile("two/pom.xml", pomTwo);
-        await project.addFile("one/src/main/java/test/MyTest.java", javaFile);
-        await project.addFile("two/src/main/java/test/MyTest2.java", javaFile);
+        await project.addFile("one/src/main/java/test/App.java", javaFile);
+        await project.addFile("two/src/main/java/test/App.java", javaFile);
         const fingerprints = toArray(await Guava19DeprecatedApiAspect.extract(project, undefined));
         assert.strictEqual(fingerprints.length, 1);
         assert.deepEqual(fingerprints[0].data, [
@@ -307,17 +307,17 @@ public class App {
         await project.addFile("settings.gradle", settings);
         await project.addFile("one/build.gradle", childGradle);
         await project.addFile("two/build.gradle", childGradle);
-        await project.addFile("one/src/main/java/test/MyTest.java", javaFile);
-        await project.addFile("two/src/main/java/test/MyTest2.java", javaFile);
+        await project.addFile("one/src/main/java/test/App.java", javaFile);
+        await project.addFile("two/src/main/java/test/App.java", javaFile);
         const fingerprints = toArray(await Guava19DeprecatedApiAspect.extract(project, undefined));
         assert.deepEqual(fingerprints[0].data, [
             {
                 directory: "one",
-                usedApis: ["src/main/java/test/MyTest.java:7"],
+                usedApis: ["src/main/java/test/App.java:7"],
             },
             {
                 directory: "two",
-                usedApis: ["src/main/java/test/MyTest2.java:7"],
+                usedApis: ["src/main/java/test/App.java:7"],
             }]);
         assert.strictEqual(fingerprints[0].sha, trueSha);
     }).enableTimeouts(false);
