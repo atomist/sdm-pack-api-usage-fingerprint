@@ -33,7 +33,7 @@ export interface UsedApiFPData {
 }
 
 async function getBuildFiles(p: Project): Promise<File[]> {
-    return p.getFiles(["**/build.gradle", "**/pom.xml"]);
+    return p.getFiles(["**/settings.gradle", "**/pom.xml"]);
 }
 
 export function createApiUsageFingerprintAspect(
@@ -49,33 +49,22 @@ export function createApiUsageFingerprintAspect(
                 for (const buildFile of buildFiles) {
                     const lastIndex = buildFile.path.lastIndexOf("/");
                     const directory = lastIndex === -1 ? "" : buildFile.path.slice(0, buildFile.path.lastIndexOf("/"));
-                    if (await p.hasDirectory(path.join(directory, "src"))) {
-                        const usedApiExtractor = new UsedApiLocator(apiDefinition);
-                        try {
-                            const usedApis = await usedApiExtractor.locateUsedApis(p as LocalProject, directory, pli);
-                            fps.push(fingerprintOf(
-                                {
-                                    type: `api-usage-${api}`,
-                                    name: `api-usage-${api}:${directory === "" ? "root" : directory}`,
-                                    data: usedApis,
-                                }));
-                        } catch (e) {
-                            fps.push(fingerprintOf(
-                                {
-                                    type: `api-usage-${api}`,
-                                    name: `api-usage-${api}:${directory === "" ? "root" : directory}`,
-                                    data: {
-                                        error: e,
-                                    },
-                                }));
-                        }
-                    } else {
+                    const usedApiExtractor = new UsedApiLocator(apiDefinition);
+                    try {
+                        const usedApis = await usedApiExtractor.locateUsedApis(p as LocalProject, directory, pli);
                         fps.push(fingerprintOf(
                             {
                                 type: `api-usage-${api}`,
-                                name: `api-usage-${api}:${directory === "" ? "root" : directory}`,
+                                name: `api-usage-${api}`,
+                                data: usedApis,
+                            }));
+                    } catch (e) {
+                        fps.push(fingerprintOf(
+                            {
+                                type: `api-usage-error`,
+                                name: `api-usage-error`,
                                 data: {
-                                    error: "No source folder found",
+                                    error: e,
                                 },
                             }));
                     }
