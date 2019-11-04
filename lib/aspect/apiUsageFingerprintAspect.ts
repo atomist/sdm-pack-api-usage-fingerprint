@@ -63,14 +63,15 @@ export function createApiUsageFingerprintAspect(
                         }
                     }
                 }
-                const hasViolations = usedApisPerModule.some(it => !!it.usedApis);
+                const hasUsage = usedApisPerModule.some(it => !!it.usedApis);
                 return {
                     type: `api-usage-${api}`,
                     name: `api-usage-${api}`,
                     displayName: `API usage for ${api}`,
+                    displayValue: hasUsage ? "Has API usage" : "No API usage",
                     data: usedApisPerModule,
                     version: "1.0.0",
-                    sha: sha256(JSON.stringify(hasViolations)),
+                    sha: sha256(JSON.stringify(hasUsage)),
                 };
             } else {
                 return undefined;
