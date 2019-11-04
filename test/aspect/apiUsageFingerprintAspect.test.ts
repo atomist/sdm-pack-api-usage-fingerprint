@@ -74,7 +74,7 @@ public class App {
         const fingerprints = toArray(await Guava19DeprecatedApiAspect.extract(project, undefined));
         assert.strictEqual(fingerprints.length, 1);
         const fingerprint = fingerprints[0];
-        assert.deepStrictEqual(fingerprint.data[0], {
+        assert.deepEqual(fingerprint.data[0], {
             directory: "root",
             usedApis: ["src/main/java/test/MyTest.java:7"],
         });
@@ -123,7 +123,7 @@ public class App {
         assert.strictEqual(fingerprints.length, 1);
         const fingerprint = fingerprints[0];
         assert.strictEqual(fingerprint.data.length, 1);
-        assert.deepStrictEqual(fingerprint.data[0], {
+        assert.deepEqual(fingerprint.data[0], {
             directory: "root",
             usedApis: ["src/main/java/test/MyTest.java:7"],
         });
@@ -174,7 +174,7 @@ public class App {
         const fingerprints = toArray(await Guava20DeprecatedApiAspect.extract(project, undefined));
         assert.strictEqual(fingerprints.length, 1);
         const fingerprint = fingerprints[0];
-        assert.deepStrictEqual(fingerprint.data[0], {
+        assert.deepEqual(fingerprint.data[0], {
             directory: "root",
             usedApis: ["src/main/java/test/MyTest.java:9", "src/main/java/test/MyTest.java:10"],
         });
@@ -257,7 +257,7 @@ public class App {
         await project.addFile("two/src/main/java/test/MyTest2.java", javaFile);
         const fingerprints = toArray(await Guava19DeprecatedApiAspect.extract(project, undefined));
         assert.strictEqual(fingerprints.length, 1);
-        assert.deepStrictEqual(fingerprints[0].data, [
+        assert.deepEqual(fingerprints[0].data, [
             {
                 directory: "one",
                 usedApis: ["src/main/java/test/MyTest.java:7"],
@@ -310,7 +310,7 @@ public class App {
         await project.addFile("one/src/main/java/test/MyTest.java", javaFile);
         await project.addFile("two/src/main/java/test/MyTest2.java", javaFile);
         const fingerprints = toArray(await Guava19DeprecatedApiAspect.extract(project, undefined));
-        assert.deepStrictEqual(fingerprints[0].data, [
+        assert.deepEqual(fingerprints[0].data, [
             {
                 directory: "one",
                 usedApis: ["src/main/java/test/MyTest.java:7"],
