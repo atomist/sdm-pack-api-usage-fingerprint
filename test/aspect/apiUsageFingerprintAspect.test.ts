@@ -18,12 +18,15 @@ import {
     NodeFsLocalProject,
 } from "@atomist/automation-client";
 import { toArray } from "@atomist/sdm-core/lib/util/misc/array";
+import { sha256 } from "@atomist/sdm-pack-fingerprint";
 import * as assert from "power-assert";
 import { TmpDir } from "temp-file";
 import {
     Guava19DeprecatedApiAspect,
     Guava20DeprecatedApiAspect,
 } from "../../lib/support/guava/guavaDeprecatedApiAspects";
+
+const trueSha = sha256(JSON.stringify(true));
 
 describe("API usage fingerprint aspect", () => {
     before("set scanner location", () => {
@@ -71,8 +74,11 @@ public class App {
         const fingerprints = toArray(await Guava19DeprecatedApiAspect.extract(project, undefined));
         assert.strictEqual(fingerprints.length, 1);
         const fingerprint = fingerprints[0];
-        assert.strictEqual(fingerprint.data.length, 1);
-        assert.strictEqual(fingerprint.data[0], "src/main/java/test/MyTest.java:7");
+        assert.deepStrictEqual(fingerprint.data[0], {
+            directory: "root",
+            usedApis: ["src/main/java/test/MyTest.java:7"],
+        });
+        assert.strictEqual(fingerprint.sha, trueSha);
     }).enableTimeouts(false);
 
     it("should find Guava 20 usage in code", async () => {
@@ -117,7 +123,11 @@ public class App {
         assert.strictEqual(fingerprints.length, 1);
         const fingerprint = fingerprints[0];
         assert.strictEqual(fingerprint.data.length, 1);
-        assert.strictEqual(fingerprint.data[0], "src/main/java/test/MyTest.java:7");
+        assert.deepStrictEqual(fingerprint.data[0], {
+            directory: "root",
+            usedApis: ["src/main/java/test/MyTest.java:7"],
+        });
+        assert.strictEqual(fingerprint.sha, trueSha);
     }).enableTimeouts(false);
 
     it("should find multiple Guava 20 usage in code", async () => {
@@ -164,9 +174,11 @@ public class App {
         const fingerprints = toArray(await Guava20DeprecatedApiAspect.extract(project, undefined));
         assert.strictEqual(fingerprints.length, 1);
         const fingerprint = fingerprints[0];
-        assert.strictEqual(fingerprint.data.length, 2);
-        assert(fingerprint.data.indexOf("src/main/java/test/MyTest.java:9") >= 0);
-        assert(fingerprint.data.indexOf("src/main/java/test/MyTest.java:10") >= 0);
+        assert.deepStrictEqual(fingerprint.data[0], {
+            directory: "root",
+            usedApis: ["src/main/java/test/MyTest.java:9", "src/main/java/test/MyTest.java:10"],
+        });
+        assert.strictEqual(fingerprint.sha, trueSha);
     }).enableTimeouts(false);
 
     it("should find Guava 19 usage in maven multi module code", async () => {
@@ -244,7 +256,18 @@ public class App {
         await project.addFile("one/src/main/java/test/MyTest.java", javaFile);
         await project.addFile("two/src/main/java/test/MyTest2.java", javaFile);
         const fingerprints = toArray(await Guava19DeprecatedApiAspect.extract(project, undefined));
-        assert.strictEqual(fingerprints.length, 3);
+        assert.strictEqual(fingerprints.length, 1);
+        assert.deepStrictEqual(fingerprints[0].data, [
+            {
+                directory: "one",
+                usedApis: ["src/main/java/test/MyTest.java:7"],
+            },
+            {
+                directory: "two",
+                usedApis: ["src/main/java/test/MyTest2.java:7"],
+            }]);
+        assert.strictEqual(fingerprints[0].sha, trueSha);
+
     }).enableTimeouts(false);
 
     it("should find Guava 19 usage in gradle multi module code", async () => {
@@ -287,6 +310,15 @@ public class App {
         await project.addFile("one/src/main/java/test/MyTest.java", javaFile);
         await project.addFile("two/src/main/java/test/MyTest2.java", javaFile);
         const fingerprints = toArray(await Guava19DeprecatedApiAspect.extract(project, undefined));
-        assert.strictEqual(fingerprints.length, 3);
+        assert.deepStrictEqual(fingerprints[0].data, [
+            {
+                directory: "one",
+                usedApis: ["src/main/java/test/MyTest.java:7"],
+            },
+            {
+                directory: "two",
+                usedApis: ["src/main/java/test/MyTest2.java:7"],
+            }]);
+        assert.strictEqual(fingerprints[0].sha, trueSha);
     }).enableTimeouts(false);
 }).enableTimeouts(false);

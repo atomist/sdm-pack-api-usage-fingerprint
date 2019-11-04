@@ -22,6 +22,7 @@ import { File } from "@atomist/automation-client/lib/project/File";
 import {
     Aspect,
     fingerprintOf,
+    sha256,
 } from "@atomist/sdm-pack-fingerprint";
 import * as path from "path";
 import { ApiDefinition } from "./model";
@@ -38,49 +39,39 @@ async function getBuildFiles(p: Project): Promise<File[]> {
 
 export function createApiUsageFingerprintAspect(
     api: string,
-    apiDefinition: ApiDefinition): Aspect<string[]> {
+    apiDefinition: ApiDefinition): Aspect<Array<{directory: string, usedApis?: string[], error?: any}>> {
     return {
         name: `api-usage-${api}`,
         displayName: `Used API versions for ${api}`,
         extract: async (p, pli) => {
             const buildFiles = await getBuildFiles(p);
             if (buildFiles && buildFiles.length > 0) {
-                const fps = [];
+                const usedApisPerModule: Array<{directory: string, usedApis?: string[], error?: any}> = [];
                 for (const buildFile of buildFiles) {
                     const lastIndex = buildFile.path.lastIndexOf("/");
                     const directory = lastIndex === -1 ? "" : buildFile.path.slice(0, buildFile.path.lastIndexOf("/"));
+                    const directoryString = directory === "" ? "root" : directory;
                     if (await p.hasDirectory(path.join(directory, "src"))) {
                         const usedApiExtractor = new UsedApiLocator(apiDefinition);
                         try {
-                            const usedApis = await usedApiExtractor.locateUsedApis(p as LocalProject, directory, pli);
-                            fps.push(fingerprintOf(
-                                {
-                                    type: `api-usage-${api}`,
-                                    name: `api-usage-${api}:${directory === "" ? "root" : directory}`,
-                                    data: usedApis,
-                                }));
+                            const usedApi = await usedApiExtractor.locateUsedApis(p as LocalProject, directory, pli);
+                            if (usedApi.length > 0) {
+                                usedApisPerModule.push({directory: directoryString, usedApis: usedApi});
+                            }
                         } catch (e) {
-                            fps.push(fingerprintOf(
-                                {
-                                    type: `api-usage-${api}`,
-                                    name: `api-usage-${api}:${directory === "" ? "root" : directory}`,
-                                    data: {
-                                        error: e,
-                                    },
-                                }));
+                            usedApisPerModule.push({directory: directoryString, error: e});
                         }
-                    } else {
-                        fps.push(fingerprintOf(
-                            {
-                                type: `api-usage-${api}`,
-                                name: `api-usage-${api}:${directory === "" ? "root" : directory}`,
-                                data: {
-                                    error: "No source folder found",
-                                },
-                            }));
                     }
                 }
-                return fps.filter(fp => !!fp);
+                const hasViolations = usedApisPerModule.some(it => !!it.usedApis);
+                return {
+                    type: `api-usage-${api}`,
+                    name: `api-usage-${api}`,
+                    displayName: `API usage for ${api}`,
+                    data: usedApisPerModule,
+                    version: "1.0.0",
+                    sha: sha256(JSON.stringify(hasViolations)),
+                };
             } else {
                 return undefined;
             }
