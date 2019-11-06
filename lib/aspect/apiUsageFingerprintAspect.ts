@@ -21,6 +21,7 @@ import {
 import { File } from "@atomist/automation-client/lib/project/File";
 import {
     Aspect,
+    FP,
     sha256,
 } from "@atomist/sdm-pack-fingerprint";
 import * as path from "path";
@@ -97,6 +98,22 @@ export function createApiUsageFingerprintAspect(
             }
         },
         toDisplayableFingerprintName: name => name,
-        toDisplayableFingerprint: fp => `API usage for ${api}: ${fp.data.length} occurrences`,
+        toDisplayableFingerprint: fp => {
+            if (isApiUsageFPError(fp)) {
+                return `API usage for ${api} with ${fp.data.length} errors`;
+            } else if (isApiUsageFP(fp)) {
+                return `API usage for ${api} with ${fp.data.length} occurrences`;
+            } else {
+                return undefined;
+            }
+        },
     };
+}
+
+function isApiUsageFP(o: FP): o is FP<UsedApiFPData[]> {
+    return (!!o.type && !!(o.data as any).usedApis);
+}
+
+function isApiUsageFPError(o: FP): o is FP<UsedApiFPErrorData[]> {
+    return (!!o.type && !!(o.data as any).error);
 }
