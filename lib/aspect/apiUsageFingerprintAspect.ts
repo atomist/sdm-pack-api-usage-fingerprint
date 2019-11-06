@@ -111,9 +111,9 @@ export function createApiUsageFingerprintAspect(
 }
 
 function isApiUsageFP(o: FP): o is FP<UsedApiFPData[]> {
-    return (!!o.type && !!(o.data as any).usedApis);
+    return (!!o.type && !!(o.data).usedApis);
 }
 
 function isApiUsageFPError(o: FP): o is FP<UsedApiFPErrorData[]> {
-    return (!!o.type && !!(o.data as any).error);
+    return (!!o.type && !!(o.data).error);
 }
