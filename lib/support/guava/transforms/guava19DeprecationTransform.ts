@@ -35,6 +35,7 @@ val transformers = listOf(
     replaceMethodOnSameClass("com.google.common.cache.LoadingCache.apply(K)", "getUnchecked"),
     replaceMethodOnSameClass("com.google.common.hash.BloomFilter.apply(T)", "mightContain"),
     replaceMethodOnSameClass("com.google.common.collect.ArrayTable.remove(Object, Object)", "erase")
+    replaceStaticMethodWithSameArgument("com.google.common.base.Objects.firstNonNull(T, T)", "com.google.common.base.MoreObjects", "firstNonNull")
 )
 ExecuteTransformCommand(transformers).main(args)
     `;
